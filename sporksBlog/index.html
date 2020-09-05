@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sporks</title>
   </head>
-  <body>
+  <body onload="getPosts()">
     <div class="nav-container">
       <div class="nav">
         <div class="home-title-containter">
@@ -22,13 +23,13 @@
             placeholder="Enter a username"
           /><label class="passwordLabel">Password</label>
           <input type="text" class="password" id="password" />
-          <button>Eat</button>
+          <button>Sign in</button>
         </div>
       </div>
     </div>
     <div class="side-nav-container">
       <div class="side-nav">
-        <div>ok this might get posts</div>
+        <div class="preview-posts" id="preview-posts"></div>
       </div>
     </div>
   </body>

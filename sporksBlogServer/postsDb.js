@@ -17,7 +17,8 @@ let posts = [
     title: "Honey Siracha Chicken",
     text:
       "Sweet and spicy Chinese Honey Sriracha Chicken – better tasting and healthier than take out!",
-    image: "https://40aprons.com/wp-content/uploads/2020/04/spicy-ramen-9.jpg",
+    image:
+      "https://www.lecremedelacrumb.com/wp-content/uploads/2014/12/honey-sriracha-chicken-3.jpg",
     type: "Dinner",
     link:
       "https://www.lecremedelacrumb.com/wp-content/uploads/2014/12/honey-sriracha-chicken-3.jpg",

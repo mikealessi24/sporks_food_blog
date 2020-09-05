@@ -1,9 +1,11 @@
 let { users, getNextUserID } = require("./usersDb");
 let { posts, getNextPostId, getDate } = require("./postsDb");
 const express = require("express");
+const cors = require("cors");
 const { request, response } = require("express");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -18,7 +20,7 @@ app.listen(4000, () => console.log("The port is running on port 4000"));
 // get posts by type *
 // create a post *
 // delete a post *
-// update a post
+// update a post *
 
 //gets full user array
 app.get("/users", (request, response) => {
@@ -120,6 +122,7 @@ app.delete("/post", (request, response) => {
   }
 });
 
+// edit a post by selecting an id
 app.put("/post", (request, response) => {
   try {
     let id = request.query.id;
