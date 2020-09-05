@@ -1,6 +1,6 @@
 let posts = [
   {
-    id: "1",
+    id: 1,
     username: "mikealessi24",
     title: "Spicy Ramen",
     text:
@@ -12,7 +12,7 @@ let posts = [
     date: "9/4/20",
   },
   {
-    id: "2",
+    id: 2,
     username: "Aadams1",
     title: "Honey Siracha Chicken",
     text:
@@ -24,7 +24,7 @@ let posts = [
     date: "2/1/20",
   },
   {
-    id: "3",
+    id: 3,
     username: "Bbook2",
     title: "Whole Wheat Banana Pancakes with Cream Cheese Glaze",
     text:
@@ -37,7 +37,7 @@ let posts = [
     date: "1/5/20",
   },
   {
-    id: "4",
+    id: 4,
     username: "Ccarr",
     title: "Seared Scallops",
     text:
@@ -50,7 +50,7 @@ let posts = [
     date: "7/34/20",
   },
   {
-    id: "5",
+    id: 5,
     username: "Ddawson",
     title: "Salmon Lox",
     text:
@@ -62,7 +62,7 @@ let posts = [
     date: "9/2/20",
   },
   {
-    id: "6",
+    id: 6,
     username: "Eearn",
     title: "Chocolate Mousse",
     text:
@@ -75,8 +75,21 @@ let posts = [
   },
 ];
 
+// function getNextPostId() {
+//   let id = 6;
+//   if (posts[posts.length - 1].id == id) {
+//     return id + 1;
+//   }
+// }
+
 function getNextPostId() {
   return posts[posts.length - 1].id + 1;
 }
 
-module.exports = { posts, getNextPostId };
+function getDate() {
+  let today = new Date();
+  let date = `${today.getMonth() + 1}-${today.getDay()}-${today.getFullYear()}`;
+  return date;
+}
+
+module.exports = { posts, getNextPostId, getDate };
