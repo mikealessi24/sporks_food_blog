@@ -10,7 +10,7 @@
   <body onload="getPosts()">
     <div class="nav-container">
       <div class="nav">
-        <div class="home-title-containter">
+        <div onclick="createPostPage()" class="home-title-containter">
           <div class="home-title">SPORKS</div>
           <div class="home-title-caption">The most versatile of food blogs</div>
         </div>
@@ -23,13 +23,31 @@
             placeholder="Enter a username"
           /><label class="passwordLabel">Password</label>
           <input type="text" class="password" id="password" />
-          <button>Sign in</button>
+          <button onclick="getUsers()">Sign in</button>
         </div>
       </div>
     </div>
-    <div class="side-nav-container">
+    <div class="content-container">
       <div class="side-nav">
         <div class="preview-posts" id="preview-posts"></div>
+      </div>
+      <div class="post-container">
+        <div id="single-post-cont" class="single-post-cont">
+          <div class="post-creator">
+            <div class="post-title">Create a Post!</div>
+            <div class="post-box">
+              <label>Title:</label>
+              <input type="text" />
+              <label>Text:</label>
+              <textarea type="text"></textarea>
+              <label>Image:</label>
+              <input type="text" />
+              <label>Recipe URL:</label>
+              <input type="text" />
+              <button>Create</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

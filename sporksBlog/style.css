@@ -53,16 +53,20 @@ body {
 
 /* Beginning of side nav styles */
 
+.content-container {
+  display: flex;
+}
+
 .side-nav {
   /* border: 1px solid black; */
-  width: 500px;
+  width: 40%;
   height: 100vh;
   background-color: cornflowerblue;
 }
 
 .single-preview {
-  height: 200px;
-  width: 200px;
+  height: 175px;
+  width: 175px;
   margin-bottom: 10px;
   margin-top: 10px;
   background-repeat: no-repeat;
@@ -77,8 +81,8 @@ body {
 }
 
 .single-preview:hover {
-  height: 195px;
-  width: 195px;
+  height: 170px;
+  width: 170px;
   box-shadow: 6px 4px black;
 }
 
@@ -90,7 +94,116 @@ body {
 
 .title {
   color: white;
-  font-size: 27px;
+  font-size: 20px;
   margin: 5px;
   text-shadow: 2px 2px black;
+}
+
+/* parent of single post  */
+.post-container {
+  width: 60%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url("https://thumbs.dreamstime.com/b/yum-text-one-single-word-printable-graphic-tee-design-doodle-print-vector-colorful-cartoon-style-illustration-hand-drawn-152755837.jpg");
+  background-size: 50px;
+}
+
+.single-post-cont {
+  height: 90%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: cornflowerblue;
+  overflow: scroll;
+}
+
+/* parent of title date and username */
+.spHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 10px;
+}
+
+.spTitle {
+  font-size: 40px;
+  text-shadow: 2px 2px white;
+}
+
+.single-post {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.spImg-cont {
+  width: 40%;
+  height: 40%;
+}
+
+.spImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.spText {
+  height: 20%;
+  width: 80%;
+  box-shadow: 4px 2px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  margin: 10px;
+  padding: 5px;
+  background-color: gold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  overflow: scroll;
+}
+
+.post-creator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 10px;
+  box-shadow: 6px 4px rgba(0, 0, 0, 0.5);
+  background-color: beige;
+  height: 80%;
+  width: 80%;
+}
+
+.post-box {
+  height: 70%;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.post-title {
+  font-size: 30px;
+  text-shadow: 2px 2px gold;
+}
+
+.post-box input,
+textarea {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.post-box textarea {
+  height: 20%;
 }

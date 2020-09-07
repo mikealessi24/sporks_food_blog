@@ -27,7 +27,7 @@ let posts = [
   {
     id: 3,
     username: "Bbook2",
-    title: "Whole Wheat Banana Pancakes with Cream Cheese Glaze",
+    title: "Whole Wheat Banana Pancakes",
     text:
       "Delicious Whole Wheat Banana Pancakes with Cream Cheese Glaze are packed with bananas and topped with a tangy sweet glaze.",
     image:
