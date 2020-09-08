@@ -1,4 +1,5 @@
 const { users } = require("../sporksBlogServer/usersDb");
+const { response } = require("express");
 
 // gets all posts from server
 function getPosts() {
@@ -57,6 +58,8 @@ function verification(users) {
       return users;
     }
   });
+  document.getElementById("credentials-container").innerHTML =
+    "<button onclick='createPostPage()'>Create a new post</button>";
   getUsersPosts(user);
 }
 
@@ -95,15 +98,33 @@ function createPostPage() {
   <div class="post-title">Create a Post!</div>
   <div class="post-box">
     <label>Title:</label>
-    <input type="text" />
+    <input id="title" type="text" />
     <label>Text:</label>
-    <textarea type="text"></textarea>
+    <textarea id="text" type="text"></textarea>
     <label>Image:</label>
-    <input type="text" />
+    <input id="image" type="text" />
     <label>Recipe URL:</label>
-    <input type="text" />
-    <button>Create</button>
+    <input id="recipe"type="text" />
+    <button onclick="createPost()">Create</button>
   </div>`;
 }
 
-function createpost() {}
+async function createPost(
+  url = "http://localhost:4000/post",
+  data = {
+    username: document.getElementById("username").value,
+    title: document.getElementById("title").value,
+    text: document.getElementById("text").value,
+    image: document.getElementById("image").value,
+    link: document.getElementById("recipe").value,
+  }
+) {
+  const response = await fetch("http://localhost:4000/post", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    mode: "cors",
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => getUsersPosts(data[data.length - 1].username));
+}

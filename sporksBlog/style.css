@@ -14,7 +14,7 @@ body {
   background: cornflowerblue;
 }
 
-.home-title-containter {
+.home-title-container {
   /* border: 1px solid black; */
   box-shadow: 4px 2px rgba(0, 0, 0, 0.5);
   width: 200px;
@@ -26,6 +26,10 @@ body {
   border-radius: 10px;
   color: black;
   text-shadow: 2px 2px white;
+}
+
+.home-title-container:hover {
+  box-shadow: 8px 4px black;
 }
 
 .home-title {

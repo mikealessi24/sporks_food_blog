@@ -10,11 +10,11 @@
   <body onload="getPosts()">
     <div class="nav-container">
       <div class="nav">
-        <div onclick="createPostPage()" class="home-title-containter">
+        <div onclick="createPostPage()" class="home-title-container">
           <div class="home-title">SPORKS</div>
           <div class="home-title-caption">The most versatile of food blogs</div>
         </div>
-        <div class="credentials-container">
+        <div id="credentials-container" class="credentials-container">
           <label class="userLabel">Sign in</label>
           <input
             type="text"
@@ -37,14 +37,14 @@
             <div class="post-title">Create a Post!</div>
             <div class="post-box">
               <label>Title:</label>
-              <input type="text" />
+              <input id="title" type="text" />
               <label>Text:</label>
-              <textarea type="text"></textarea>
+              <textarea id="text" type="text"></textarea>
               <label>Image:</label>
-              <input type="text" />
+              <input id="image" type="text" />
               <label>Recipe URL:</label>
-              <input type="text" />
-              <button>Create</button>
+              <input id="recipe" type="text" />
+              <div>Sign in to create a post!</div>
             </div>
           </div>
         </div>
