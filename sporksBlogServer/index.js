@@ -1,7 +1,10 @@
+// these will be deleted once using the real db
 let { users, getNextUserID } = require("./usersDb");
 let { posts, getNextPostId, getDate } = require("./postsDb");
+
 const express = require("express");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 const { request, response } = require("express");
 
 const app = express();
@@ -39,6 +42,51 @@ app.get("/user-by-id", (request, response) => {
     response.status(200).send(user);
   } catch (error) {
     response.status(500).send(error);
+  }
+});
+
+// creating a user with hashed pw
+app.post("/user", async (request, response) => {
+  try {
+    const firstname = request.body.firstname;
+    const lastname = request.body.lastname;
+    const username = request.body.username;
+    const password = request.body.password;
+
+    let salt = await bcrypt.genSalt();
+    let hashedPassword = await bcrypt.hash(password, salt);
+
+    let user = { firstname, lastname, username, password: hashedPassword };
+    users.push(user);
+
+    response.status(201).send(users);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//authenticate a user
+app.post("/authenticate-user", async (request, response) => {
+  try {
+    const username = request.body.username;
+    const password = request.body.password;
+    const userExists = (username) =>
+      users.find((el) => el.username === username);
+
+    const currentUser = userExists(username);
+
+    if (!userExists) {
+      return response.status(401).send({ message: "INVALID USERNAME" });
+    }
+
+    if (await bcrypt.compare(password, currentUser.password)) {
+      return response.status(200).send({ message: "YOU HAVE LOGGED IN" });
+      // going to want to create a jwt token here
+    } else {
+      return response.status(401).send({ message: "INVALID PASSWORD" });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
