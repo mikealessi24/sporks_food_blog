@@ -2,9 +2,12 @@
 let { users, getNextUserID } = require("./usersDb");
 let { posts, getNextPostId, getDate } = require("./postsDb");
 
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config;
 const { request, response } = require("express");
 
 const app = express();
@@ -195,3 +198,14 @@ app.put("/post", (request, response) => {
     console.log(error);
   }
 });
+
+//send home page
+// app.get("/home", async (request, response) => {
+//   try {
+//     console.log("send home page");
+//     response.sendFile(path.join(__dirname + "/../sporksBlog/index.html"));
+//   } catch (error) {
+//     console.log(error);
+//     response.status(500).send(error);
+//   }
+// });
