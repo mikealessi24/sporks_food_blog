@@ -58,9 +58,10 @@ function verification(users) {
       return users;
     }
   });
+  document.getElementById("userWelcome").innerHTML = `WELCOME, ${username}!`;
   document.getElementById("credentials-container").innerHTML =
     "<button onclick='createPostPage()'>Create a new post</button>";
-  getUsersPosts(user);
+  createPostPage();
 }
 
 function getUsersPosts(user) {

@@ -11,25 +11,27 @@ body {
   /* border: 1px solid black; */
   height: 15vh;
   padding: 5px;
-  background: cornflowerblue;
+  background: black;
+  color: #8ffc6e;
 }
-
 .home-title-container {
-  /* border: 1px solid black; */
-  box-shadow: 4px 2px rgba(0, 0, 0, 0.5);
+  border: 1px solid white;
+  /* box-shadow: 4px 2px rgba(0, 0, 0, 0.5); */
   width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  background-color: gold;
+  background-color: #8ffc6e;
   border-radius: 10px;
   color: black;
   text-shadow: 2px 2px white;
 }
 
 .home-title-container:hover {
-  box-shadow: 8px 4px black;
+  background-color: black;
+  color: #8ffc6e;
+  text-shadow: 0px 0px;
 }
 
 .home-title {
@@ -65,7 +67,10 @@ body {
   /* border: 1px solid black; */
   width: 40%;
   height: 100vh;
-  background-color: cornflowerblue;
+  background-image: url("https://c.stocksy.com/a/4Fz100/z9/473746.jpg");
+  background-size: 200px;
+  background-repeat: repeat;
+  overflow: scroll;
 }
 
 .single-preview {
@@ -111,8 +116,9 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url("https://thumbs.dreamstime.com/b/yum-text-one-single-word-printable-graphic-tee-design-doodle-print-vector-colorful-cartoon-style-illustration-hand-drawn-152755837.jpg");
-  background-size: 50px;
+  /* background-image: url("https://c.stocksy.com/a/4Fz100/z9/473746.jpg");
+  background-size: 200px;
+  background-repeat: repeat; */
 }
 
 .single-post-cont {
@@ -123,8 +129,8 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  background-color: cornflowerblue;
   overflow: scroll;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* parent of title date and username */
@@ -176,16 +182,17 @@ body {
   overflow: scroll;
 }
 
+/* everything below is for post creator */
 .post-creator {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
   border-radius: 10px;
-  box-shadow: 6px 4px rgba(0, 0, 0, 0.5);
-  background-color: beige;
-  height: 80%;
-  width: 80%;
+
+  background-color: rgb(253, 252, 252);
+  height: 100%;
+  width: 100%;
 }
 
 .post-box {
@@ -198,8 +205,15 @@ body {
 }
 
 .post-title {
-  font-size: 30px;
-  text-shadow: 2px 2px gold;
+  font-size: 40px;
+  color: black;
+  border: 1px solid black;
+  background-color: #8ffc6e;
+  border-radius: 100px;
+  width: 90%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
 }
 
 .post-box input,
@@ -210,4 +224,13 @@ textarea {
 
 .post-box textarea {
   height: 20%;
+}
+
+/* landing container */
+
+.landing {
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  color: white;
 }
