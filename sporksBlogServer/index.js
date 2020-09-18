@@ -1,6 +1,6 @@
 // these will be deleted once using the real db
 let { users, getNextUserID } = require("./usersDb");
-let { posts, getNextPostId, getDate } = require("./postsDb");
+const posts = require("./postsDb");
 
 const path = require("path");
 const mongoose = require("mongoose");
@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { request, response } = require("express");
+const { constants } = require("buffer");
 
 const app = express();
 app.use(cors());
@@ -34,6 +35,7 @@ const PostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   ingredients: { type: String, required: true },
+  instructions: { type: String, required: true },
   image: { type: String, required: true },
   date: { type: String, required: true },
   creator: {
@@ -49,13 +51,11 @@ const UserModel = mongoose.model("user", userSchema);
 //LIST OF ROUTES TO MAKE
 //get full list of users *
 // get full list of posts *
-// get users by id *
-// get posts by user *
+// get users by id*
 // get post by id *
-// get posts by type *
 // create a post *
 // delete a post *
-// update a post *
+// update a post(still need this)
 
 //gets all users from db
 //might not be needed
@@ -69,13 +69,14 @@ app.get("/users", async (request, response) => {
 });
 
 // gets a single user by id
-app.get("/user-by-id", (request, response) => {
-  let id = request.query.id;
-  let user = users.find((el) => el.id == id);
+app.get("/user-by-id", async (request, response) => {
   try {
+    const id = request.query.id;
+    const user = await UserModel.findById(id);
     response.status(200).send(user);
   } catch (error) {
     response.status(500).send(error);
+    console.log(error);
   }
 });
 
@@ -139,47 +140,24 @@ app.post("/authenticate-user", async (request, response) => {
 });
 
 //gets full list of posts
-app.get("/posts", (request, response) => {
+app.get("/posts", async (request, response) => {
   try {
+    const posts = await PostModel.find();
     response.status(200).send(posts);
-  } catch (error) {
-    response.stautus(500).send(error);
-  }
-});
-
-// gets all posts by a specific user  (case sensitive)
-// might not need
-app.get("/posts-by-username", (request, response) => {
-  try {
-    let username = request.query.username;
-    console.log(username);
-    let usersPosts = posts.filter((el) => el.username == username);
-    response.status(200).send(usersPosts);
   } catch (error) {
     response.status(500).send(error);
   }
 });
 
 // gets a specific post by id
-app.get("/posts-by-id", (request, response) => {
+app.get("/post-by-id", async (request, response) => {
   try {
     let id = request.query.id;
-    let post = posts.find((el) => el.id == id);
+    const post = await PostModel.findById(id);
     response.status(200).send(post);
   } catch (error) {
     response.status(500).send(error);
-  }
-});
-
-// gets all posts based on type
-//might delete
-app.get("/posts-by-type", (request, response) => {
-  try {
-    let type = request.query.type;
-    let typePosts = posts.filter((el) => el.type == type);
-    response.status(200).send(typePosts);
-  } catch (error) {
-    response.status(500).send(error);
+    console.log(error);
   }
 });
 
@@ -197,11 +175,11 @@ app.post("/post", async (request, response) => {
 });
 
 //delete a post by selecting an id
-app.delete("/post", (request, response) => {
+app.delete("/post", async (request, response) => {
   try {
-    let id = request.query.id;
-    let newPosts = posts.filter((el) => el.id != id);
-    response.status(200).send(newPosts);
+    const id = request.query.id;
+    const deletedPost = await PostModel.findByIdAndDelete(id);
+    response.status(200).send(deletedPost);
   } catch (error) {
     response.status(500).send(error);
     console.log(error);
@@ -212,21 +190,7 @@ app.delete("/post", (request, response) => {
 app.put("/post", (request, response) => {
   try {
     let id = request.query.id;
-    let username = request.body.username;
-    let title = request.body.title;
-    let text = request.body.text;
-    let image = request.body.image;
-    let link = request.body.link;
-    let date = getDate();
-    let tempPost = {};
-    tempPost.id = id;
-    tempPost.username = username;
-    tempPost.title = title;
-    tempPost.text = text;
-    tempPost.image = image;
-    tempPost.link = link;
-    tempPost.date = date;
-    posts = posts.map((el) => (el.id == id ? tempPost : el));
+
     response.status(200).send(posts);
   } catch (error) {
     response.status(500).send(error);
@@ -248,7 +212,7 @@ app.put("/post", (request, response) => {
 async function dataEntry() {
   try {
     for (let i = 0; i < posts.length; i++) {
-      const listingsArr = await PostModel.create(listings[i]);
+      const postsArr = await PostModel.create(posts[i]);
     }
     // for (let i = 0; i < posts.length; i++) {
     //   if (posts[i]. ---- == null) {
@@ -259,5 +223,6 @@ async function dataEntry() {
     console.log(error);
   }
 }
+// dataEntry();
 
 app.listen(4000, () => console.log("The port is running on port 4000"));
