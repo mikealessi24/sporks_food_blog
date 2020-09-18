@@ -3,11 +3,12 @@ let { users, getNextUserID } = require("./usersDb");
 let { posts, getNextPostId, getDate } = require("./postsDb");
 
 const path = require("path");
+const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config;
+require("dotenv").config();
 const { request, response } = require("express");
 
 const app = express();
@@ -15,7 +16,35 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(4000, () => console.log("The port is running on port 4000"));
+const un = process.env.user;
+const pw = process.env.password;
+mongoose.connect(
+  `mongodb+srv://${un}:${pw}@cluster0.kzid4.mongodb.net/sporksDb?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
+
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true, unique: true },
+  firstname: { type: String },
+  lastname: { type: String },
+});
+
+const PostSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  ingredients: { type: String, required: true },
+  image: { type: String, required: true },
+  date: { type: String, required: true },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+});
+
+const PostModel = mongoose.model("post", PostSchema);
+const UserModel = mongoose.model("user", userSchema);
 
 //LIST OF ROUTES TO MAKE
 //get full list of users *
@@ -28,9 +57,11 @@ app.listen(4000, () => console.log("The port is running on port 4000"));
 // delete a post *
 // update a post *
 
-//gets full user array
-app.get("/users", (request, response) => {
+//gets all users from db
+//might not be needed
+app.get("/users", async (request, response) => {
   try {
+    const users = await UserModel.find();
     response.status(200).send(users);
   } catch (error) {
     response.status(500).send(error);
@@ -48,22 +79,29 @@ app.get("/user-by-id", (request, response) => {
   }
 });
 
-// creating a user with hashed pw
+// creating a user with a hashed pw in the database
 app.post("/user", async (request, response) => {
   try {
-    const firstname = request.body.firstname;
-    const lastname = request.body.lastname;
     const username = request.body.username;
     const password = request.body.password;
+    const firstname = request.body.firstname;
+    const lastname = request.body.lastname;
 
-    let salt = await bcrypt.genSalt();
-    let hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    let user = { firstname, lastname, username, password: hashedPassword };
-    users.push(user);
+    const user = new UserModel({
+      firstname,
+      lastname,
+      username,
+      password: hashedPassword,
+    });
 
-    response.status(201).send(users);
+    const newUser = await UserModel.create(user);
+    console.log("created new user");
+    response.status(201).send(newUser);
   } catch (error) {
+    response.status(500).send(error);
     console.log(error);
   }
 });
@@ -73,22 +111,29 @@ app.post("/authenticate-user", async (request, response) => {
   try {
     const username = request.body.username;
     const password = request.body.password;
-    const userExists = (username) =>
-      users.find((el) => el.username === username);
-
-    const currentUser = userExists(username);
-
-    if (!userExists) {
-      return response.status(401).send({ message: "INVALID USERNAME" });
+    if (!username || !password) {
+      return response
+        .status(404)
+        .send({ message: "enter a username or password" });
     }
+    const found = await UserModel.find({ username });
+    const userFound = found[0];
 
-    if (await bcrypt.compare(password, currentUser.password)) {
-      return response.status(200).send({ message: "YOU HAVE LOGGED IN" });
-      // going to want to create a jwt token here
+    if (userFound) {
+      if (await bcrypt.compare(password, userFound.password)) {
+        const user = { username: userFound.username };
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+        return response
+          .status(200)
+          .send({ jwt: token, message: "you have logged in" });
+      } else {
+        return response.status(401).send({ message: "invalid password" });
+      }
     } else {
-      return response.status(401).send({ message: "INVALID PASSWORD" });
+      return response.status(404).send({ message: "invalid username" });
     }
   } catch (error) {
+    response.status(500).send(error);
     console.log(error);
   }
 });
@@ -103,6 +148,7 @@ app.get("/posts", (request, response) => {
 });
 
 // gets all posts by a specific user  (case sensitive)
+// might not need
 app.get("/posts-by-username", (request, response) => {
   try {
     let username = request.query.username;
@@ -126,6 +172,7 @@ app.get("/posts-by-id", (request, response) => {
 });
 
 // gets all posts based on type
+//might delete
 app.get("/posts-by-type", (request, response) => {
   try {
     let type = request.query.type;
@@ -137,24 +184,12 @@ app.get("/posts-by-type", (request, response) => {
 });
 
 // create a post
-app.post("/post", (request, response) => {
+app.post("/post", async (request, response) => {
   try {
-    let id = getNextPostId();
-    let username = request.body.username;
-    let title = request.body.title;
-    let text = request.body.text;
-    let image = request.body.image;
-    let link = request.body.link;
-    let date = getDate();
-    posts.push({
-      id: id,
-      title: title,
-      text: text,
-      image: image,
-      link: link,
-      date: date,
-    });
-    response.status(200).send(posts);
+    console.log("create a post");
+    const postInstance = new PostModel(request.body);
+    const newPost = await PostModel.create(postInstance);
+    response.status(200).send({ message: "created", newPost });
   } catch (error) {
     response.status(500).send(error);
     console.log(error);
@@ -209,3 +244,20 @@ app.put("/post", (request, response) => {
 //     response.status(500).send(error);
 //   }
 // });
+
+async function dataEntry() {
+  try {
+    for (let i = 0; i < posts.length; i++) {
+      const listingsArr = await PostModel.create(listings[i]);
+    }
+    // for (let i = 0; i < posts.length; i++) {
+    //   if (posts[i]. ---- == null) {
+    //     console.log(posts[i]);
+    //   }
+    // }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.listen(4000, () => console.log("The port is running on port 4000"));
