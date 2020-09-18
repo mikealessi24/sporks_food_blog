@@ -1,131 +1,212 @@
-const { users } = require("../sporksBlogServer/usersDb");
-const { response } = require("express");
+// these will be deleted once using the real db
+let { users, getNextUserID } = require("./usersDb");
+const posts = require("./postsDb");
 
-// gets all posts from server
-function getPosts() {
-  fetch("http://localhost:4000/posts")
-    .then((response) => response.json())
-    .then((posts) => previewPosts(posts));
-}
+const path = require("path");
+const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const { request, response } = require("express");
+const { constants } = require("buffer");
 
-// renders the preview post to the screen
-function previewPosts(posts) {
-  posts.map((el) => {
-    document.getElementById("preview-posts").innerHTML += `
-    <div onclick="getPostById(${el.id})" class="single-preview" style="background-image: url(${el.image})">
-      <div class="title">${el.title}</div>
-    </div>`;
-  });
-}
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/", express.static("views"));
 
-//gets a single post by id when clicked
-function getPostById(id) {
-  fetch(`http://localhost:4000/posts-by-id?id=${id}`)
-    .then((response) => response.json())
-    .then((postById) => renderPostById(postById));
-}
+const un = process.env.user;
+const pw = process.env.password;
+mongoose.connect(
+  `mongodb+srv://${un}:${pw}@cluster0.kzid4.mongodb.net/sporksDb?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
-function renderPostById(post) {
-  document.getElementById(
-    "single-post-cont"
-  ).innerHTML = `<div class="single-post">
-  <div class="spHeader">
-    <div class="spTitle">${post.title}</div>
-    <div class="spUsername">Author: ${post.username}</div>
-    <div class="spType">${post.type}</div>
-    <div class="spDate">${post.date}</div>
-  </div>
-  <div class="spImg-cont">
-    <div class="spImage"><img class="spImage" src="${post.image}" alt="" /></div>
-  </div>
-  <div class="spText">${post.text}</div>
-  <div class="spType">${post.type}</div>
-  <div class="spLink"><a href="${post.link}"/>Click here for Recipe!</div>
-</div>`;
-}
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true, unique: true },
+  firstname: { type: String },
+  lastname: { type: String },
+});
 
-function getUsers() {
-  fetch("http://localhost:4000/users")
-    .then((response) => response.json())
-    .then((users) => verification(users));
-}
+const PostSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  ingredients: { type: String, required: true },
+  instructions: { type: String, required: true },
+  image: { type: String, required: true },
+  date: { type: String, required: true },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+});
 
-function verification(users) {
-  let username = document.getElementById("username").value;
-  let password = document.getElementById("password").value;
-  let user = users.filter((el) => {
-    if (el.username == username && el.password == password) {
-      return users;
-    }
-  });
-  document.getElementById("userWelcome").innerHTML = `WELCOME, ${username}!`;
-  document.getElementById("credentials-container").innerHTML =
-    "<button onclick='createPostPage()'>Create a new post</button>";
-  createPostPage();
-}
+const PostModel = mongoose.model("post", PostSchema);
+const UserModel = mongoose.model("user", userSchema);
 
-function getUsersPosts(user) {
-  fetch(`http://localhost:4000/posts-by-username?username=${user[0].username}`)
-    .then((response) => response.json())
-    .then((usersPosts) => renderUsersPosts(usersPosts));
-}
+//LIST OF ROUTES TO MAKE
+//get full list of users *
+// get full list of posts *
+// get users by id*
+// get post by id *
+// create a post *
+// delete a post *
+// update a post(still need this)
 
-function renderUsersPosts(usersPosts) {
-  document.getElementById("single-post-cont").innerHTML = "";
-  usersPosts.map((el) => {
-    document.getElementById(
-      "single-post-cont"
-    ).innerHTML += `<div class="single-post">
-  <div class="spHeader">
-    <div class="spTitle">${el.title}</div>
-    <div class="spUsername">Author: ${el.username}</div>
-    <div class="spType">${el.type}</div>
-    <div class="spDate">${el.date}</div>
-  </div>
-  <div class="spImg-cont">
-    <div class="spImage"><img class="spImage" src="${el.image}" alt="" /></div>
-  </div>
-  <div class="spText">${el.text}</div>
-  <div class="spType">${el.type}</div>
-  <div class="spLink"><a href="${el.link}"/>Click here for Recipe!</div>
-</div>`;
-  });
-}
-
-function createPostPage() {
-  document.getElementById(
-    "single-post-cont"
-  ).innerHTML = `<div class="post-creator">
-  <div class="post-title">Create a Post!</div>
-  <div class="post-box">
-    <label>Title:</label>
-    <input id="title" type="text" />
-    <label>Text:</label>
-    <textarea id="text" type="text"></textarea>
-    <label>Image:</label>
-    <input id="image" type="text" />
-    <label>Recipe URL:</label>
-    <input id="recipe"type="text" />
-    <button onclick="createPost()">Create</button>
-  </div>`;
-}
-
-async function createPost(
-  url = "http://localhost:4000/post",
-  data = {
-    username: document.getElementById("username").value,
-    title: document.getElementById("title").value,
-    text: document.getElementById("text").value,
-    image: document.getElementById("image").value,
-    link: document.getElementById("recipe").value,
+//gets all users from db
+//might not be needed
+app.get("/users", async (request, response) => {
+  try {
+    const users = await UserModel.find();
+    response.status(200).send(users);
+  } catch (error) {
+    response.status(500).send(error);
   }
-) {
-  const response = await fetch("http://localhost:4000/post", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    mode: "cors",
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((data) => getUsersPosts(data[data.length - 1].username));
-}
+});
+
+// gets a single user by id
+app.get("/user-by-id", async (request, response) => {
+  try {
+    const id = request.query.id;
+    const user = await UserModel.findById(id);
+    response.status(200).send(user);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+// creating a user with a hashed pw in the database
+app.post("/user", async (request, response) => {
+  try {
+    const username = request.body.username;
+    const password = request.body.password;
+    const firstname = request.body.firstname;
+    const lastname = request.body.lastname;
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = new UserModel({
+      firstname,
+      lastname,
+      username,
+      password: hashedPassword,
+    });
+
+    const newUser = await UserModel.create(user);
+    console.log("created new user");
+    response.status(201).send(newUser);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+//authenticate a user
+app.post("/authenticate-user", async (request, response) => {
+  try {
+    const username = request.body.username;
+    const password = request.body.password;
+    if (!username || !password) {
+      return response
+        .status(404)
+        .send({ message: "enter a username or password" });
+    }
+    const found = await UserModel.find({ username });
+    const userFound = found[0];
+
+    if (userFound) {
+      if (await bcrypt.compare(password, userFound.password)) {
+        const user = { username: userFound.username };
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+        return response
+          .status(200)
+          .send({ jwt: token, message: "you have logged in" });
+      } else {
+        return response.status(401).send({ message: "invalid password" });
+      }
+    } else {
+      return response.status(404).send({ message: "invalid username" });
+    }
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+//gets full list of posts
+app.get("/posts", async (request, response) => {
+  try {
+    const posts = await PostModel.find();
+    response.status(200).send(posts);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+// gets a specific post by id
+app.get("/post-by-id", async (request, response) => {
+  try {
+    let id = request.query.id;
+    const post = await PostModel.findById(id);
+    response.status(200).send(post);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+// create a post
+app.post("/post", async (request, response) => {
+  try {
+    console.log("create a post");
+    const postInstance = new PostModel(request.body);
+    const newPost = await PostModel.create(postInstance);
+    response.status(200).send({ message: "created", newPost });
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+//delete a post by selecting an id
+app.delete("/post", async (request, response) => {
+  try {
+    const id = request.query.id;
+    const deletedPost = await PostModel.findByIdAndDelete(id);
+    response.status(200).send(deletedPost);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+// edit a post by selecting an id
+app.put("/post", (request, response) => {
+  try {
+    let id = request.query.id;
+
+    response.status(200).send(posts);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+app.get("/fullpost", async (request, response) => {
+  try {
+    console.log("read a post page");
+    response.sendFile(path.join(__dirname + "/views/postReader.html"));
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+});
+
+app.listen(4000, () => console.log("The port is running on port 4000"));

@@ -234,3 +234,26 @@ textarea {
   background-color: black;
   color: white;
 }
+
+/* reader page */
+
+.read-cont {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left {
+  width: 25%;
+  height: 100vh;
+  background-image: url("https://c.stocksy.com/a/4Fz100/z9/473746.jpg");
+  background-size: 180px;
+  background-repeat: repeat;
+}
+
+.right {
+  width: 25%;
+  height: 100vh;
+  background-image: url("https://c.stocksy.com/a/4Fz100/z9/473746.jpg");
+  background-size: 180px;
+  background-repeat: repeat;
+}

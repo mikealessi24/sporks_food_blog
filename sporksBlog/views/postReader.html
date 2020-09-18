@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="nav-container">
+      <div class="nav">
+        <a href="/index.html"
+          ><div class="home-title-container">
+            <div class="home-title">SPORKS</div>
+            <div class="home-title-caption">
+              The most versatile of food blogs
+            </div>
+          </div></a
+        >
+        <div class="welcome">
+          <div id="userWelcome">WELCOME, SIGN IN OR CREATE AN ACCOUNT!</div>
+        </div>
+        <div id="credentials-container" class="credentials-container">
+          <label class="userLabel">Sign in</label>
+          <input
+            type="text"
+            class="username"
+            id="username"
+            placeholder="Enter a username"
+          /><label class="passwordLabel">Password</label>
+          <input type="password" class="password" id="password" />
+          <button onclick="getUsers()">Sign in</button>
+        </div>
+      </div>
+    </div>
+    <div class="read-cont">
+      <div class="left"></div>
+      <div class="read">
+        <div class="fullpost-cont">
+          <div id="fullpost">example</div>
+        </div>
+      </div>
+      <div class="right"></div>
+    </div>
+  </body>
+</html>
