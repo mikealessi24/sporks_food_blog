@@ -123,7 +123,7 @@ app.post("/authenticate-user", async (request, response) => {
 
     if (userFound) {
       if (await bcrypt.compare(password, userFound.password)) {
-        const user = { username: userFound.username };
+        const user = { id: userFound._id, username: userFound.username };
         const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
         return response
           .status(200)
@@ -144,6 +144,18 @@ app.post("/authenticate-user", async (request, response) => {
 app.get("/posts", async (request, response) => {
   try {
     const posts = await PostModel.find();
+    response.status(200).send(posts);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+// gets a users specific posts
+// need to add verifyToken
+app.post("/posts-by-user", verifyToken, async (request, response) => {
+  try {
+    const creator = request.user.id;
+    const posts = await PostModel.find({ creator });
     response.status(200).send(posts);
   } catch (error) {
     response.status(500).send(error);
@@ -199,6 +211,7 @@ app.put("/post", (request, response) => {
   }
 });
 
+// send a full post
 app.get("/fullpost", async (request, response) => {
   try {
     console.log("read a post page");
@@ -209,4 +222,26 @@ app.get("/fullpost", async (request, response) => {
   }
 });
 
+function verifyToken(request, response, next) {
+  const token = request.body.token;
+  if (token == null) {
+    return response.status(401).send({ message: "unverified user" });
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return response.status(403).send({ message: "invalid jwt" });
+    }
+    console.log("user is verified");
+    request.user = user;
+  });
+  next();
+}
+
 app.listen(4000, () => console.log("The port is running on port 4000"));
+
+// function userDecode() {
+//   return jwt.decode(
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNjNlOWJmOGJlOWNkZmJjNTJhYWExZSIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE2MDA0NTgzMjV9.PXvYeV_8Ceck4zPStDGPI31yP4mK1H1K9vfdwk7fBro"
+//   );
+// }
+// console.log(userDecode());
