@@ -11,43 +11,83 @@ function previewPosts(posts) {
   console.log(posts);
   posts.map((el) => {
     document.getElementById("preview-posts").innerHTML += `
-    <a href="fullpost"><div onclick="getPostById('${el._id}')" class="single-preview" style="background-image: url(${el.image})">
+    <a href="fullpost"><div onclick="storeId('${el._id}')" class="single-preview" style="background-image: url(${el.image})">
       <div class="title">${el.title}</div>
     </div></a>`;
   });
 }
 
-//gets a single post by id when clicked
-function getPostById(id) {
+//gets a single post by id when clicked, moves it to local storage and sends fullpost page
+function storeId(id) {
   console.log(id);
-  fetch(`http://localhost:4000/post-by-id?id=${id}`)
+  localStorage.setItem("id", id);
+}
+
+function getPostById() {
+  const postId = localStorage.getItem("id");
+  console.log(postId);
+  fetch(`http://localhost:4000/post-by-id?id=${postId}`)
     .then((response) => response.json())
     .then((postById) => postReader(postById));
 }
 
-// this needs to be updated
-// and changed
+// need to work on the creator
 function postReader(post) {
   console.log(post);
+  document.getElementById(
+    "fullpost"
+  ).innerHTML = `<div class="fpTitle">${post.title}</div>
+  <div class="fpDate">${post.date}</div>
+  <div class="fpCreator">Created by:${post.creator.username}</div>
+  <div class="fullpost-header">
+    <div class="fpImage">
+      <img
+        src="${post.image}"
+      />
+    </div>
+    <div class="fpDescription-cont">
+      <div class="fpDescription">
+      ${post.description}
+      </div>
+    </div>
+  </div>
+  <div class="fpInfo">
+    <div class="fpIngredients-cont">
+      <div class="fpIngredients-title">Ingredients:</div>
+      <div class="fpIngredients">
+      ${post.ingredients}
+      </div>
+    </div>
+    <div class="fpInstructions-cont">
+      <div class="fpInstructions-title">Instructions:</div>
+      <div class="fpInstructions">
+      ${post.instructions}
+      </div>
+    </div>
+  </div>
+</div>`;
 }
 
-//   document.getElementById(
-//     "single-post-cont"
-//   ).innerHTML = `<div class="single-post">
-//   <div class="spHeader">
-//     <div class="spTitle"></div>
-//     <div class="spUsername">Author:</div>
-//     <div class="spType"></div>
-//     <div class="spDate"></div>
-//   </div>
-//   <div class="spImg-cont">
-//     <div class="spImage"><img class="spImage" src="${post.image}" alt="" /></div>
-//   </div>
-//   <div class="spText"></div>
-//   <div class="spType"></div>
-//   <div class="spLink"><a href=""/>Click here for Recipe!</div>
-// </div>`;
-// }
+async function signIn(
+  url = "http://localhost:4000/authenticate-user",
+  data = {
+    username: document.getElementById("username").value,
+    password: document.getElementById("password").value,
+  }
+) {
+  const response = await fetch("http://localhost:4000/authenticate-user", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    mode: "cors",
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => storeUser(data.jwt));
+}
+
+function storeUser(jwt) {
+  localStorage.setItem("jwt", jwt);
+}
 
 // don't need this
 function getUsers() {
