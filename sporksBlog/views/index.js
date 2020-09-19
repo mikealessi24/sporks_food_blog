@@ -70,6 +70,7 @@ function postReader(post) {
 </div>`;
 }
 
+// make sure jwt is transfering
 async function signIn(
   url = "http://localhost:4000/authenticate-user",
   data = {
@@ -85,13 +86,41 @@ async function signIn(
   })
     .then((response) => response.json())
     .then((data) => storeUser(data.jwt))
-    // might need to change
-    .then(
-      () =>
-        (document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
-          document.getElementById("username").value
-        }!`)
-    );
+    .then(() => signedIn());
+}
+
+function signedIn() {
+  document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
+    document.getElementById("username").value
+  }!`;
+  document.getElementById(
+    "create-post"
+  ).innerHTML = `<button onclick="createPostPage()">Create a Post</button>`;
+}
+
+async function createUser(
+  url = "http://localhost:4000/user",
+  data = {
+    username: document.getElementById("createUn").value,
+    password: document.getElementById("createPw").value,
+    firstname: document.getElementById("createFn").value,
+    lastname: document.getElementById("createLn").value,
+  }
+) {
+  const response = await fetch("http://localhost:4000/user", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    mode: "cors",
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .then(() => closeModal())
+    .then(() => alert("account has been created"));
+}
+function closeModal() {
+  const modal = document.getElementById("myModal");
+  modal.style.display = "none";
 }
 
 function storeUser(jwt) {
@@ -161,25 +190,32 @@ function createPostPage() {
   <div class="post-box">
     <label>Title:</label>
     <input id="title" type="text" />
-    <label>Text:</label>
-    <textarea id="text" type="text"></textarea>
+    <label>Description:</label>
+    <textarea id="description" type="text"></textarea>
+    <label>Ingredients:</label>
+    <textarea id="ingredients" type="text"></textarea>
+    <label>Instructions:</label>
+    <textarea id="instructions" type="text"></textarea>
     <label>Image:</label>
     <input id="image" type="text" />
-    <label>Recipe URL:</label>
-    <input id="recipe"type="text" />
+    <label>Date:</label>
+    <input id="date" type="date">
     <button onclick="createPost()">Create</button>
-  </div>`;
+  </div>
+</div>`;
 }
 
 // update this function and html
 async function createPost(
   url = "http://localhost:4000/post",
   data = {
-    username: document.getElementById("username").value,
     title: document.getElementById("title").value,
-    text: document.getElementById("text").value,
+    description: document.getElementById("description").value,
+    ingredients: document.getElementById("ingredients").value,
+    instructions: document.getElementById("instructions").value,
     image: document.getElementById("image").value,
-    link: document.getElementById("recipe").value,
+    date: document.getElementById("date").value,
+    token: localStorage.getItem("jwt"),
   }
 ) {
   const response = await fetch("http://localhost:4000/post", {
@@ -189,5 +225,5 @@ async function createPost(
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
-    .then((data) => getUsersPosts(data[data.length - 1].username));
+    .then((data) => console.log(data));
 }

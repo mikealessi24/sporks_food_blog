@@ -31,24 +31,34 @@
           /><label class="passwordLabel">Password</label>
           <input type="password" class="password" id="password" />
           <button onclick="signIn()">Sign in</button>
-          <div class ="account-creator">
+          <div class="account-creator">
             <button id="myBtn">Create an account</button>
             <div id="myModal" class="modal">
               <div class="modal-content">
                 <span class="close">&times;</span>
-              <div class="create-cont">
-                <div class="modal-title">CREATE AN ACCOUNT!</div>
-                <div class="create-input">
-                  <label class="unLabel">Username<input id="username"type="text"></label>
-                  <label class="pwLabel">Password<input id="password" type="text"></label>
-                  <label class="fnLabel">Firstname<input id="firstname" type="text"></label>
-                  <label class="lnLabel">Lastname<input id="lastname" type="text"></label>
+                <div class="create-cont">
+                  <div class="modal-title">CREATE AN ACCOUNT!</div>
+                  <div class="create-input">
+                    <label class="unLabel"
+                      >Username<input id="createUn" type="text"
+                    /></label>
+                    <label class="pwLabel"
+                      >Password<input id="createPw" type="text"
+                    /></label>
+                    <label class="fnLabel"
+                      >Firstname<input id="createFn" type="text"
+                    /></label>
+                    <label class="lnLabel"
+                      >Lastname<input id="createLn" type="text"
+                    /></label>
+                    <button onclick="createUser()">CREATE</button>
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
           </div>
-        </div>        
+          <div class="create-post" id="create-post"></div>
+        </div>
       </div>
     </div>
     <div class="content-container">
@@ -57,8 +67,6 @@
       </div>
       <div class="post-container">
         <div id="single-post-cont" class="single-post-cont">
-          </div>
-        </div>
       </div>
     </div>
   </body>
@@ -66,16 +74,16 @@
     var modal = document.getElementById("myModal");
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
-    btn.onclick = function() {
+    btn.onclick = function () {
       modal.style.display = "block";
-    }
-    span.onclick = function() {
+    };
+    span.onclick = function closeModal() {
       modal.style.display = "none";
-  }
-  window.onclick = function(event) {
+    };
+    window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
-    }
+    };
   </script>
 </html>

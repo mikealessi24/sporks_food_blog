@@ -175,11 +175,20 @@ app.get("/post-by-id", async (request, response) => {
 });
 
 // create a post
-app.post("/post", async (request, response) => {
+app.post("/post", verifyToken, async (request, response) => {
   try {
     console.log("create a post");
-    const postInstance = new PostModel(request.body);
-    const newPost = await PostModel.create(postInstance);
+    const post = {
+      title: request.body.title,
+      description: request.body.description,
+      ingredients: request.body.ingredients,
+      instructions: request.body.instructions,
+      image: request.body.image,
+      date: request.body.date,
+      creator: request.user.id,
+    };
+    // const postInstance = new PostModel(request.body);
+    const newPost = await PostModel.create(post);
     response.status(200).send({ message: "created", newPost });
   } catch (error) {
     response.status(500).send(error);
