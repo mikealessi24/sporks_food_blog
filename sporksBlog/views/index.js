@@ -70,7 +70,6 @@ function postReader(post) {
 </div>`;
 }
 
-// make sure jwt is transfering
 async function signIn(
   url = "http://localhost:4000/authenticate-user",
   data = {
@@ -159,7 +158,7 @@ function renderUsersPosts(usersPosts) {
     </div>
     <div class="userPost-buttons">
       <button onclick="deletePost('${el._id}')">DELETE</button>
-      <button>UPDATE</button>
+      <button onclick="updatePostPage(); storeId('${el._id}')">UPDATE</button>
     </div>
   </div>`;
   });
@@ -205,7 +204,30 @@ function createPostPage() {
 </div>`;
 }
 
-// update this function and html
+function updatePostPage() {
+  document.getElementById(
+    "single-post-cont"
+  ).innerHTML = `<div class="post-creator">
+  <div class="post-title">Update a Post!</div>
+  <div class="post-box">
+    <label>Title:</label>
+    <input id="title" type="text" />
+    <label>Description:</label>
+    <textarea id="description" type="text"></textarea>
+    <label>Ingredients:</label>
+    <textarea id="ingredients" type="text"></textarea>
+    <label>Instructions:</label>
+    <textarea id="instructions" type="text"></textarea>
+    <label>Image:</label>
+    <input id="image" type="text" />
+    <label>Date:</label>
+    <input id="date" type="date">
+    <button onclick="updatePost()">Update</button>
+  </div>
+</div>`;
+}
+
+// creates a post
 async function createPost(
   url = "http://localhost:4000/post",
   data = {
@@ -225,5 +247,28 @@ async function createPost(
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then(() => getPostsByUser());
+}
+
+async function updatePost(
+  url = "http://localhost:4000/post",
+  data = {
+    title: document.getElementById("title").value,
+    description: document.getElementById("description").value,
+    ingredients: document.getElementById("ingredients").value,
+    instructions: document.getElementById("instructions").value,
+    image: document.getElementById("image").value,
+    date: document.getElementById("date").value,
+    token: localStorage.getItem("jwt"),
+  }
+) {
+  const id = localStorage.getItem("id");
+  const response = await fetch(`http://localhost:4000/post?id=${id}`, {
+    method: "PUT",
+    headers: { "content-type": "application/json" },
+    mode: "cors",
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then(() => getPostsByUser());
 }

@@ -209,11 +209,29 @@ app.delete("/post", verifyToken, async (request, response) => {
 });
 
 // edit a post by selecting an id
-app.put("/post", (request, response) => {
+app.put("/post", verifyToken, async (request, response) => {
   try {
-    let id = request.query.id;
+    console.log("update a post");
+    const id = request.query.id;
+    const title = request.body.title;
+    const description = request.body.description;
+    const ingredients = request.body.ingredients;
+    const instructions = request.body.instructions;
+    const image = request.body.image;
+    const date = request.body.date;
+    const creator = request.user.id;
+    const currentPost = await PostModel.findById(id);
 
-    response.status(200).send(posts);
+    const updatedPost = await PostModel.findByIdAndUpdate(id, {
+      title: title ? title : currentPost.title,
+      description: description ? description : currentPost.description,
+      ingredients: ingredients ? ingredients : currentPost.ingredients,
+      instructions: instructions ? instructions : currentPost.instructions,
+      image: image ? image : currentPost.image,
+      date: date ? date : currentPost.date,
+      creator,
+    });
+    response.status(200).send(updatedPost);
   } catch (error) {
     response.status(500).send(error);
     console.log(error);
