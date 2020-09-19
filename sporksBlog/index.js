@@ -188,7 +188,7 @@ app.post("/post", async (request, response) => {
 });
 
 //delete a post by selecting an id
-app.delete("/post", async (request, response) => {
+app.delete("/post", verifyToken, async (request, response) => {
   try {
     const id = request.query.id;
     const deletedPost = await PostModel.findByIdAndDelete(id);
@@ -238,10 +238,3 @@ function verifyToken(request, response, next) {
 }
 
 app.listen(4000, () => console.log("The port is running on port 4000"));
-
-// function userDecode() {
-//   return jwt.decode(
-//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNjNlOWJmOGJlOWNkZmJjNTJhYWExZSIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE2MDA0NTgzMjV9.PXvYeV_8Ceck4zPStDGPI31yP4mK1H1K9vfdwk7fBro"
-//   );
-// }
-// console.log(userDecode());

@@ -31,7 +31,24 @@
           /><label class="passwordLabel">Password</label>
           <input type="password" class="password" id="password" />
           <button onclick="signIn()">Sign in</button>
-        </div>
+          <div class ="account-creator">
+            <button id="myBtn">Create an account</button>
+            <div id="myModal" class="modal">
+              <div class="modal-content">
+                <span class="close">&times;</span>
+              <div class="create-cont">
+                <div class="modal-title">CREATE AN ACCOUNT!</div>
+                <div class="create-input">
+                  <label class="unLabel">Username<input id="username"type="text"></label>
+                  <label class="pwLabel">Password<input id="password" type="text"></label>
+                  <label class="fnLabel">Firstname<input id="firstname" type="text"></label>
+                  <label class="lnLabel">Lastname<input id="lastname" type="text"></label>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>        
       </div>
     </div>
     <div class="content-container">
@@ -40,26 +57,25 @@
       </div>
       <div class="post-container">
         <div id="single-post-cont" class="single-post-cont">
-          <!-- <div class="landing">
-            <div class="caption">Welcome to SPORKS</div>
-            <div>Have a look around or sign in to create a post</div>
-          </div> -->
-          <!-- <div class="post-creator">
-            <div class="post-title">Create a Post!</div>
-            <div class="post-box">
-              <label>Title:</label>
-              <input id="title" type="text" />
-              <label>Text:</label>
-              <textarea id="text" type="text"></textarea>
-              <label>Image:</label>
-              <input id="image" type="text" />
-              <label>Recipe URL:</label>
-              <input id="recipe" type="text" />
-              <div>Sign in to create a post!</div>
-            </div>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
   </body>
+  <script>
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    span.onclick = function() {
+      modal.style.display = "none";
+  }
+  window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
 </html>

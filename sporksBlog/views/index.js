@@ -1,4 +1,4 @@
-const posts = require("../postsDb");
+const { url } = require("inspector");
 
 // gets all posts from server
 function getPosts() {
@@ -84,7 +84,14 @@ async function signIn(
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
-    .then((data) => storeUser(data.jwt));
+    .then((data) => storeUser(data.jwt))
+    // might need to change
+    .then(
+      () =>
+        (document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
+          document.getElementById("username").value
+        }!`)
+    );
 }
 
 function storeUser(jwt) {
@@ -111,9 +118,9 @@ function renderUsersPosts(usersPosts) {
   usersPosts.map((el) => {
     document.getElementById(
       "single-post-cont"
-    ).innerHTML += ` <div class="single-post">
+    ).innerHTML += `<div class="single-post">
     <div class="spImg-cont">
-      <img src="${el.image}" alt="" />
+      <a href="fullpost"><img src="${el.image}" alt="" /></a>
     </div>
     <div class="spTitle-cont"></div>
     <div class="spHeader">
@@ -122,11 +129,28 @@ function renderUsersPosts(usersPosts) {
       <div class="spText">${el.description}</div>
     </div>
     <div class="userPost-buttons">
-      <button>DELETE</button>
+      <button onclick="deletePost('${el._id}')">DELETE</button>
       <button>UPDATE</button>
     </div>
   </div>`;
   });
+}
+// deletes a post, re-renders all users post preview to screen
+// need to fix left post previews
+async function deletePost(
+  id,
+  url = `http://localhost:4000/post`,
+  data = { token: localStorage.getItem("jwt") }
+) {
+  const response = await fetch(`http://localhost:4000/post?id=${id}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json" },
+    mode: "cors",
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then(() => console.log(data))
+    .then(() => getPostsByUser());
 }
 
 function createPostPage() {
@@ -147,7 +171,7 @@ function createPostPage() {
   </div>`;
 }
 
-// update
+// update this function and html
 async function createPost(
   url = "http://localhost:4000/post",
   data = {
