@@ -1,6 +1,5 @@
-// these will be deleted once using the real db
-let { users, getNextUserID } = require("./usersDb");
-const posts = require("./postsDb");
+const UserModel = require("./models/userModel");
+const PostModel = require("./models/postModel");
 
 const path = require("path");
 const mongoose = require("mongoose");
@@ -24,30 +23,6 @@ mongoose.connect(
   `mongodb+srv://${un}:${pw}@cluster0.kzid4.mongodb.net/sporksDb?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
-
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true, unique: true },
-  firstname: { type: String },
-  lastname: { type: String },
-});
-
-const PostSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  ingredients: { type: String, required: true },
-  instructions: { type: String, required: true },
-  image: { type: String, required: true },
-  date: { type: String, required: true },
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-  },
-});
-
-const PostModel = mongoose.model("post", PostSchema);
-const UserModel = mongoose.model("user", userSchema);
 
 //LIST OF ROUTES TO MAKE
 //get full list of users *
