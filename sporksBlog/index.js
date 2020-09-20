@@ -7,6 +7,17 @@ const {
   getUserById,
 } = require("./controllers/userControllers");
 
+const {
+  deletePost,
+  editPost,
+  createPost,
+  getPostsByUser,
+  getPostById,
+  getAllPosts,
+} = require("./controllers/postControllers");
+
+const fullPostPage = require("./controllers/viewControllers");
+
 const path = require("path");
 const mongoose = require("mongoose");
 const express = require("express");
@@ -30,15 +41,6 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-//LIST OF ROUTES TO MAKE
-//get full list of users *
-// get full list of posts *
-// get users by id*
-// get post by id *
-// create a post *
-// delete a post *
-// update a post(still need this)
-
 //gets all users from db
 //might not be needed
 app.get("/users", getAllUsers);
@@ -53,113 +55,26 @@ app.post("/user", postUser);
 app.post("/authenticate-user", authenticateUser);
 
 //gets full list of posts
-app.get("/posts", async (request, response) => {
-  try {
-    const posts = await PostModel.find();
-    response.status(200).send(posts);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+app.get("/posts", getAllPosts);
 
 // gets a users specific posts
 // need to add verifyToken
-app.post("/posts-by-user", verifyToken, async (request, response) => {
-  try {
-    const creator = request.user.id;
-    const posts = await PostModel.find({ creator });
-    response.status(200).send(posts);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+app.post("/posts-by-user", verifyToken, getPostsByUser);
 
 // gets a specific post by id
-app.get("/post-by-id", async (request, response) => {
-  try {
-    let id = request.query.id;
-    const post = await PostModel.findById(id);
-    response.status(200).send(post);
-  } catch (error) {
-    response.status(500).send(error);
-    console.log(error);
-  }
-});
+app.get("/post-by-id", getPostById);
 
 // create a post
-app.post("/post", verifyToken, async (request, response) => {
-  try {
-    console.log("create a post");
-    const post = {
-      title: request.body.title,
-      description: request.body.description,
-      ingredients: request.body.ingredients,
-      instructions: request.body.instructions,
-      image: request.body.image,
-      date: request.body.date,
-      creator: request.user.id,
-    };
-    // const postInstance = new PostModel(request.body);
-    const newPost = await PostModel.create(post);
-    response.status(200).send({ message: "created", newPost });
-  } catch (error) {
-    response.status(500).send(error);
-    console.log(error);
-  }
-});
+app.post("/post", verifyToken, createPost);
 
 //delete a post by selecting an id
-app.delete("/post", verifyToken, async (request, response) => {
-  try {
-    const id = request.query.id;
-    const deletedPost = await PostModel.findByIdAndDelete(id);
-    response.status(200).send(deletedPost);
-  } catch (error) {
-    response.status(500).send(error);
-    console.log(error);
-  }
-});
+app.delete("/post", verifyToken, deletePost);
 
 // edit a post by selecting an id
-app.put("/post", verifyToken, async (request, response) => {
-  try {
-    console.log("update a post");
-    const id = request.query.id;
-    const title = request.body.title;
-    const description = request.body.description;
-    const ingredients = request.body.ingredients;
-    const instructions = request.body.instructions;
-    const image = request.body.image;
-    const date = request.body.date;
-    const creator = request.user.id;
-    const currentPost = await PostModel.findById(id);
-
-    const updatedPost = await PostModel.findByIdAndUpdate(id, {
-      title: title ? title : currentPost.title,
-      description: description ? description : currentPost.description,
-      ingredients: ingredients ? ingredients : currentPost.ingredients,
-      instructions: instructions ? instructions : currentPost.instructions,
-      image: image ? image : currentPost.image,
-      date: date ? date : currentPost.date,
-      creator,
-    });
-    response.status(200).send(updatedPost);
-  } catch (error) {
-    response.status(500).send(error);
-    console.log(error);
-  }
-});
+app.put("/post", verifyToken, editPost);
 
 // send a full post
-app.get("/fullpost", async (request, response) => {
-  try {
-    console.log("read a post page");
-    response.sendFile(path.join(__dirname + "/views/postReader.html"));
-  } catch (error) {
-    response.status(500).send(error);
-    console.log(error);
-  }
-});
+app.get("/fullpost", fullPostPage);
 
 function verifyToken(request, response, next) {
   const token = request.body.token;

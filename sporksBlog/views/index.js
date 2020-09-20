@@ -256,8 +256,7 @@ async function createPost(
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
-    .then(() => getPostsByUser())
-    .then(() => location.reload());
+    .then(() => getPostsByUser());
 }
 
 async function updatePost(
