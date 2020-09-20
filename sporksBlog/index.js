@@ -1,5 +1,3 @@
-const UserModel = require("./models/userModel");
-const PostModel = require("./models/postModel");
 const {
   getAllUsers,
   postUser,
@@ -18,31 +16,10 @@ const {
 
 const fullPostPage = require("./controllers/viewControllers");
 
-const path = require("path");
-const mongoose = require("mongoose");
-const express = require("express");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const { request, response } = require("express");
-const { constants } = require("buffer");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/", express.static("views"));
-
-const un = process.env.user;
-const pw = process.env.password;
-mongoose.connect(
-  `mongodb+srv://${un}:${pw}@cluster0.kzid4.mongodb.net/sporksDb?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+const app = require("./server");
 
 //gets all users from db
-//might not be needed
 app.get("/users", getAllUsers);
 
 // gets a single user by id
@@ -51,14 +28,13 @@ app.get("/user-by-id", getUserById);
 // creating a user with a hashed pw in the database
 app.post("/user", postUser);
 
-//authenticate a user
+//authenticate a user by comparing hashedPw
 app.post("/authenticate-user", authenticateUser);
 
 //gets full list of posts
 app.get("/posts", getAllPosts);
 
 // gets a users specific posts
-// need to add verifyToken
 app.post("/posts-by-user", verifyToken, getPostsByUser);
 
 // gets a specific post by id
@@ -76,7 +52,7 @@ app.put("/post", verifyToken, editPost);
 // send a full post
 app.get("/fullpost", fullPostPage);
 
-//authentication
+//authorize user
 function verifyToken(request, response, next) {
   const token = request.body.token;
   if (token == null) {

@@ -35,12 +35,12 @@ function getPostById() {
 
 // need to work on the creator
 function postReader(post) {
-  console.log(post);
+  console.log("this is post", post);
   document.getElementById(
     "fullpost"
   ).innerHTML = `<div class="fpTitle">${post.title}</div>
   <div class="fpDate">${post.date}</div>
-  <div class="fpCreator">Created by:${post.creator.username}</div>
+  <div class="fpCreator">Created by:${post.creator}</div>
   <div class="fullpost-header">
     <div class="fpImage">
       <img
@@ -88,9 +88,9 @@ async function signIn(
     .then(() => renderSignedIn());
 }
 
-function logout() {
-  localStorage.clear();
-  location.reload();
+function storeUser(jwt) {
+  localStorage.setItem("jwt", jwt);
+  getPostsByUser();
 }
 
 function renderSignedIn() {
@@ -103,6 +103,11 @@ function renderSignedIn() {
   document.getElementById(
     "signed-in"
   ).innerHTML = `<button onclick="logout()">Logout</button>`;
+}
+
+function logout() {
+  localStorage.clear();
+  location.reload();
 }
 
 async function createUser(
@@ -131,11 +136,6 @@ function closeModal() {
   modal.style.display = "none";
 }
 
-function storeUser(jwt) {
-  localStorage.setItem("jwt", jwt);
-  getPostsByUser();
-}
-
 async function getPostsByUser(
   url = "http://localhost:4000/posts-by-user",
   data = { token: localStorage.getItem("jwt") }
@@ -157,7 +157,7 @@ function renderUsersPosts(usersPosts) {
       "single-post-cont"
     ).innerHTML += `<div class="single-post">
     <div class="spImg-cont">
-      <a href="fullpost"><img src="${el.image}" alt="" /></a>
+      <img src="${el.image}" alt="" />
     </div>
     <div class="spTitle-cont"></div>
     <div class="spHeader">
@@ -168,12 +168,12 @@ function renderUsersPosts(usersPosts) {
     <div class="userPost-buttons">
       <button onclick="deletePost('${el._id}')">DELETE</button>
       <button onclick="updatePostPage(); storeId('${el._id}')">UPDATE</button>
+      <a href="fullpost"><button onclick="storeId('${el._id}'); getPostById()">READ</button></a>
     </div>
   </div>`;
   });
 }
 // deletes a post, re-renders all users post preview to screen
-// need to fix left post previews
 async function deletePost(
   id,
   url = `http://localhost:4000/post`,
@@ -259,6 +259,7 @@ async function createPost(
     .then(() => getPostsByUser());
 }
 
+//upadates a post
 async function updatePost(
   url = "http://localhost:4000/post",
   data = {
@@ -280,4 +281,16 @@ async function updatePost(
   })
     .then((response) => response.json())
     .then(() => getPostsByUser());
+}
+
+function recipeSearch() {
+  fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=Chicken")
+    .then((response) => response.json())
+    .then((recipes) => renderRecipes(recipes.meals));
+}
+
+function renderRecipes(recipes) {
+  recipes.map((el) => {
+    document.getElementById("results").innerHTML += `<div>${el.strMeal}</div>`;
+  });
 }
