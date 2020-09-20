@@ -123,7 +123,11 @@ app.post("/authenticate-user", async (request, response) => {
 
     if (userFound) {
       if (await bcrypt.compare(password, userFound.password)) {
-        const user = { id: userFound._id, username: userFound.username };
+        const user = {
+          id: userFound._id,
+          username: userFound.username,
+          password: userFound.password,
+        };
         const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
         return response
           .status(200)
@@ -137,6 +141,17 @@ app.post("/authenticate-user", async (request, response) => {
   } catch (error) {
     response.status(500).send(error);
     console.log(error);
+  }
+});
+
+app.post("/authorize-user", verifyToken, async (request, response) => {
+  try {
+    const username = request.user.username;
+    const password = request.user.password;
+    const user = { username, password };
+    response.status(200).send(user);
+  } catch (error) {
+    response.status(500).send(error);
   }
 });
 

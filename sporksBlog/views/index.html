@@ -21,7 +21,8 @@
         <div class="welcome">
           <div id="userWelcome">WELCOME, SIGN IN OR CREATE AN ACCOUNT!</div>
         </div>
-        <div id="credentials-container" class="credentials-container">
+        <div class="credentials-container">
+        <div id="signed-in">
           <label class="userLabel">Sign in</label>
           <input
             type="text"
@@ -31,6 +32,7 @@
           /><label class="passwordLabel">Password</label>
           <input type="password" class="password" id="password" />
           <button onclick="signIn()">Sign in</button>
+        
           <div class="account-creator">
             <button id="myBtn">Create an account</button>
             <div id="myModal" class="modal">
@@ -57,6 +59,7 @@
               </div>
             </div>
           </div>
+        </div>
           <div class="create-post" id="create-post"></div>
         </div>
       </div>

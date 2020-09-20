@@ -85,16 +85,24 @@ async function signIn(
   })
     .then((response) => response.json())
     .then((data) => storeUser(data.jwt))
-    .then(() => signedIn());
+    .then(() => renderSignedIn());
 }
 
-function signedIn() {
+function logout() {
+  localStorage.clear();
+  location.reload();
+}
+
+function renderSignedIn() {
   document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
     document.getElementById("username").value
   }!`;
   document.getElementById(
     "create-post"
   ).innerHTML = `<button onclick="createPostPage()">Create a Post</button>`;
+  document.getElementById(
+    "signed-in"
+  ).innerHTML = `<button onclick="logout()">Logout</button>`;
 }
 
 async function createUser(
@@ -117,6 +125,7 @@ async function createUser(
     .then(() => closeModal())
     .then(() => alert("account has been created"));
 }
+
 function closeModal() {
   const modal = document.getElementById("myModal");
   modal.style.display = "none";
@@ -247,7 +256,8 @@ async function createPost(
     body: JSON.stringify(data),
   })
     .then((response) => response.json())
-    .then(() => getPostsByUser());
+    .then(() => getPostsByUser())
+    .then(() => location.reload());
 }
 
 async function updatePost(
