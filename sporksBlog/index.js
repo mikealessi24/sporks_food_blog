@@ -76,6 +76,7 @@ app.put("/post", verifyToken, editPost);
 // send a full post
 app.get("/fullpost", fullPostPage);
 
+//authentication
 function verifyToken(request, response, next) {
   const token = request.body.token;
   if (token == null) {
