@@ -4,7 +4,12 @@ const { url } = require("inspector");
 function getPosts() {
   fetch("http://localhost:4000/posts")
     .then((response) => response.json())
-    // .then((posts) => console.log(posts))
+    .then((posts) => landingPreview(posts));
+}
+
+function getPostsSignedIn() {
+  fetch("http://localhost:4000/posts")
+    .then((response) => response.json())
     .then((posts) => previewPosts(posts));
 }
 
@@ -14,6 +19,17 @@ function previewPosts(posts) {
   posts.map((el) => {
     document.getElementById("preview-posts").innerHTML += `
     <a href="fullpost"><div onclick="storeId('${el._id}')" class="single-preview" style="background-image: url(${el.image})">
+      <div class="title">${el.title}</div>
+    </div></a>`;
+  });
+}
+
+// renders post previews to landing page
+function landingPreview(posts) {
+  console.log(posts);
+  posts.map((el) => {
+    document.getElementById("landing").innerHTML += `
+    <a href="fullpost"><div onclick="storeId('${el._id}')" class="landing-preview" style="background-image: url(${el.image})">
       <div class="title">${el.title}</div>
     </div></a>`;
   });
@@ -85,12 +101,29 @@ async function signIn(
   })
     .then((response) => response.json())
     .then((data) => storeUser(data.jwt))
+    .then(() => updateContentPage())
+    .then(() => getPostsSignedIn())
     .then(() => renderSignedIn());
 }
 
 function storeUser(jwt) {
   localStorage.setItem("jwt", jwt);
   getPostsByUser();
+}
+
+function updateContentPage() {
+  document.getElementById("content").innerHTML = `
+  <div class="side-nav">
+        <div class="preview-posts" id="preview-posts"></div>
+      </div>
+      <div class="post-container">
+        <div id="single-post-cont" class="single-post-cont">
+          <div class="results-cont">
+            <div class="results" id="results"></div>
+          </div>
+        </div>
+      </div>
+  `;
 }
 
 function renderSignedIn() {
@@ -102,7 +135,11 @@ function renderSignedIn() {
   ).innerHTML = `<button onclick="createPostPage()">Create a Post</button>`;
   document.getElementById(
     "signed-in"
-  ).innerHTML = `<button onclick="logout()">Logout</button>`;
+  ).innerHTML = `<div class="logout"><button onclick="logout()">Logout</button></div>`;
+  document.getElementById(
+    "drinkSearch"
+  ).innerHTML = `<input type="text" placeholder="Enter a drink name..." id="drink" />
+  <button onclick="drinkSearch()">Search</button>`;
 }
 
 function logout() {
@@ -283,14 +320,32 @@ async function updatePost(
     .then(() => getPostsByUser());
 }
 
-function recipeSearch() {
-  fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=Chicken")
+function drinkSearch() {
+  name = document.getElementById("drink").value;
+  fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${name}`)
     .then((response) => response.json())
-    .then((recipes) => renderRecipes(recipes.meals));
+    .then((recipes) => renderRecipes(recipes.drinks));
 }
 
 function renderRecipes(recipes) {
+  document.getElementById("single-post-cont").innerHTML = "";
   recipes.map((el) => {
-    document.getElementById("results").innerHTML += `<div>${el.strMeal}</div>`;
+    document.getElementById("single-post-cont").innerHTML += `
+  <div class="single-post">
+    <div class="spImg-cont">
+      <img src="${el.strDrinkThumb}" alt="" />
+    </div>
+    <div class="spTitle-cont"></div>
+    <div class="spHeader">
+      <div class="spTitle">${el.strDrink}</div>
+      <div class="spText">${el.strInstructions}</div>
+    </div>
+    <div class="measureIngredients">
+      <div>${el.strMeasure1}: ${el.strIngredient1}</div>
+      <div>${el.strMeasure2}: ${el.strIngredient2}</div>
+      <div>${el.strMeasure3}: ${el.strIngredient3}</div>
+    </div>
+  </div>
+  `;
   });
 }

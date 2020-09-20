@@ -10,72 +10,61 @@
   <body onload="getPosts()">
     <div class="nav-container">
       <div class="nav">
-        <a href="/index.html"
-          ><div class="home-title-container">
-            <div class="home-title">SPORKS</div>
-            <div class="home-title-caption">
-              The most versatile of food blogs
-            </div>
-          </div></a
-        >
+        <div onclick="getPostsByUser()" class="home-title-container">
+          <div class="home-title">SPORKS</div>
+          <div class="home-title-caption">The most versatile of food blogs</div>
+        </div>
         <div class="welcome">
           <div id="userWelcome">WELCOME, SIGN IN OR CREATE AN ACCOUNT!</div>
         </div>
         <div class="credentials-container">
-        <div id="signed-in">
-          <label class="userLabel">Sign in</label>
-          <input
-            type="text"
-            class="username"
-            id="username"
-            placeholder="Enter a username"
-          /><label class="passwordLabel">Password</label>
-          <input type="password" class="password" id="password" />
-          <button onclick="signIn()">Sign in</button>
-        
-          <div class="account-creator">
-            <button id="myBtn">Create an account</button>
-            <div id="myModal" class="modal">
-              <div class="modal-content">
-                <span class="close">&times;</span>
-                <div class="create-cont">
-                  <div class="modal-title">CREATE AN ACCOUNT!</div>
-                  <div class="create-input">
-                    <label class="unLabel"
-                      >Username<input id="createUn" type="text"
-                    /></label>
-                    <label class="pwLabel"
-                      >Password<input id="createPw" type="text"
-                    /></label>
-                    <label class="fnLabel"
-                      >Firstname<input id="createFn" type="text"
-                    /></label>
-                    <label class="lnLabel"
-                      >Lastname<input id="createLn" type="text"
-                    /></label>
-                    <button onclick="createUser()">CREATE</button>
+          <div id="signed-in">
+            <label class="userLabel">Sign in</label>
+            <input
+              type="text"
+              class="username"
+              id="username"
+              placeholder="Enter a username"
+            /><label class="passwordLabel">Password</label>
+            <input type="password" class="password" id="password" />
+            <button onclick="signIn()">Sign in</button>
+
+            <div class="account-creator">
+              <button id="myBtn">Create an account</button>
+              <div id="myModal" class="modal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <div class="create-cont">
+                    <div class="modal-title">CREATE AN ACCOUNT!</div>
+                    <div class="create-input">
+                      <label class="unLabel"
+                        >Username<input id="createUn" type="text"
+                      /></label>
+                      <label class="pwLabel"
+                        >Password<input id="createPw" type="text"
+                      /></label>
+                      <label class="fnLabel"
+                        >Firstname<input id="createFn" type="text"
+                      /></label>
+                      <label class="lnLabel"
+                        >Lastname<input id="createLn" type="text"
+                      /></label>
+                      <button onclick="createUser()">CREATE</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
           <div class="create-post" id="create-post"></div>
+          <div class="drinkSearch" id="drinkSearch"></div>
         </div>
       </div>
     </div>
-    <div class="content-container">
-      <div class="side-nav">
-        <div class="preview-posts" id="preview-posts"></div>
+    <div id="content" class="content-container">
+      <div class="landing-cont">
+        <div id="landing" class="landing"></div>
       </div>
-      <div class="post-container">
-        <div id="single-post-cont" class="single-post-cont">
-          <button onclick="recipeSearch()">search</button>
-          <div class="results-cont">
-            <div class ="results" id="results"></div>
-          </div>
-        </div>
-        
     </div>
   </body>
   <script>
