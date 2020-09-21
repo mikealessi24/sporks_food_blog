@@ -7,6 +7,18 @@ function getPosts() {
     .then((posts) => landingPreview(posts));
 }
 
+// renders post previews to landing page
+function landingPreview(posts) {
+  console.log(posts);
+  posts.map((el) => {
+    document.getElementById("landing").innerHTML += `
+    <a href="fullpost"><div onclick="storeId('${el._id}')" class="landing-preview" style="background-image: url(${el.image})">
+      <div class="title">${el.title}</div>
+    </div></a>`;
+  });
+}
+
+// gets all posts again, renders differently
 function getPostsSignedIn() {
   fetch("http://localhost:4000/posts")
     .then((response) => response.json())
@@ -24,23 +36,13 @@ function previewPosts(posts) {
   });
 }
 
-// renders post previews to landing page
-function landingPreview(posts) {
-  console.log(posts);
-  posts.map((el) => {
-    document.getElementById("landing").innerHTML += `
-    <a href="fullpost"><div onclick="storeId('${el._id}')" class="landing-preview" style="background-image: url(${el.image})">
-      <div class="title">${el.title}</div>
-    </div></a>`;
-  });
-}
-
-//gets a single post by id when clicked, moves it to local storage and sends fullpost page
+//stores a single post id in local storage when clicked on
 function storeId(id) {
   console.log(id);
   localStorage.setItem("id", id);
 }
 
+// gets a post by id
 function getPostById() {
   const postId = localStorage.getItem("id");
   console.log(postId);
@@ -49,14 +51,13 @@ function getPostById() {
     .then((postById) => postReader(postById));
 }
 
-// need to work on the creator
+// renders a read page for a post
 function postReader(post) {
   console.log("this is post", post);
   document.getElementById(
     "fullpost"
   ).innerHTML = `<div class="fpTitle">${post.title}</div>
   <div class="fpDate">${post.date}</div>
-  <div class="fpCreator">Created by:${post.creator}</div>
   <div class="fullpost-header">
     <div class="fpImage">
       <img
@@ -86,6 +87,7 @@ function postReader(post) {
 </div>`;
 }
 
+// sign in
 async function signIn(
   url = "http://localhost:4000/authenticate-user",
   data = {
@@ -106,11 +108,13 @@ async function signIn(
     .then(() => renderSignedIn());
 }
 
+// stores a users jwt in local storage
 function storeUser(jwt) {
   localStorage.setItem("jwt", jwt);
   getPostsByUser();
 }
 
+// re-renders main page
 function updateContentPage() {
   document.getElementById("content").innerHTML = `
   <div class="side-nav">
@@ -126,6 +130,7 @@ function updateContentPage() {
   `;
 }
 
+// changes sign in welcome and adds signed in features
 function renderSignedIn() {
   document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
     document.getElementById("username").value
@@ -142,11 +147,13 @@ function renderSignedIn() {
   <button onclick="drinkSearch()">Search</button>`;
 }
 
+// logout
 function logout() {
   localStorage.clear();
   location.reload();
 }
 
+// creates a user
 async function createUser(
   url = "http://localhost:4000/user",
   data = {
@@ -173,6 +180,7 @@ function closeModal() {
   modal.style.display = "none";
 }
 
+// gets a user's posts if a jwt token is stored
 async function getPostsByUser(
   url = "http://localhost:4000/posts-by-user",
   data = { token: localStorage.getItem("jwt") }
@@ -187,6 +195,7 @@ async function getPostsByUser(
     .then((data) => renderUsersPosts(data));
 }
 
+// renders user's posts to screen
 function renderUsersPosts(usersPosts) {
   document.getElementById("single-post-cont").innerHTML = "";
   usersPosts.map((el) => {
@@ -227,6 +236,7 @@ async function deletePost(
     .then(() => getPostsByUser());
 }
 
+// renders a create post template
 function createPostPage() {
   document.getElementById(
     "single-post-cont"
@@ -250,6 +260,7 @@ function createPostPage() {
 </div>`;
 }
 
+// renders an update post template
 function updatePostPage() {
   document.getElementById(
     "single-post-cont"
@@ -320,6 +331,7 @@ async function updatePost(
     .then(() => getPostsByUser());
 }
 
+// fetches drink recipes from external cocktail api
 function drinkSearch() {
   name = document.getElementById("drink").value;
   fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${name}`)
@@ -327,6 +339,7 @@ function drinkSearch() {
     .then((recipes) => renderRecipes(recipes.drinks));
 }
 
+// renders drink recipes
 function renderRecipes(recipes) {
   document.getElementById("single-post-cont").innerHTML = "";
   recipes.map((el) => {
