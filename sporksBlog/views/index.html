@@ -7,10 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sporks</title>
   </head>
-  <body onload="getPosts()">
+  <body onload="getPosts(); checkJwt()">
     <div class="nav-container">
       <div class="nav">
-        <div onclick="getPostsByUser()" class="home-title-container">
+        <div
+          onclick="getPostsByUser(); updateContentPage(); getPostsSignedIn()"
+          class="home-title-container"
+        >
           <div class="home-title">SPORKS</div>
           <div class="home-title-caption">The most versatile of food blogs</div>
         </div>

@@ -7,11 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sporks</title>
   </head>
-  <body onload="getPostById(); authorizeUser()">
+  <body onload="getPostById(); checkJwt()">
     <div class="nav-container">
       <div class="nav">
         <a href="/index.html"
-          ><div class="home-title-container">
+          ><div
+            onclick="getPostsByUser(); updateContentPage(); getPostsSignedIn()"
+            class="home-title-container"
+          >
             <div class="home-title">SPORKS</div>
             <div class="home-title-caption">
               The most versatile of food blogs
@@ -22,15 +25,18 @@
           <div id="userWelcome">WELCOME, SIGN IN OR CREATE AN ACCOUNT!</div>
         </div>
         <div id="credentials-container" class="credentials-container">
-          <label class="userLabel">Sign in</label>
-          <input
-            type="text"
-            class="username"
-            id="username"
-            placeholder="Enter a username"
-          /><label class="passwordLabel">Password</label>
-          <input type="password" class="password" id="password" />
-          <button onclick="getUsers()">Sign in</button>
+          <div id="signed-in">
+            <label class="userLabel">Sign in</label>
+            <input
+              type="text"
+              class="username"
+              id="username"
+              placeholder="Enter a username"
+            /><label class="passwordLabel">Password</label>
+            <input type="password" class="password" id="password" />
+            <button onclick="getUsers()">Sign in</button>
+          </div>
+          <div class="create-post" id="create-post"></div>
         </div>
       </div>
     </div>

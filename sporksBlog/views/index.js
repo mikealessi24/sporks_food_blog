@@ -103,15 +103,31 @@ async function signIn(
   })
     .then((response) => response.json())
     .then((data) => storeUser(data.jwt))
+    .then(() => storeUsername())
     .then(() => updateContentPage())
     .then(() => getPostsSignedIn())
     .then(() => renderSignedIn());
+}
+
+// stores username in local storage
+function storeUsername() {
+  let usernameLogin = document.getElementById("username").value;
+  localStorage.setItem("un", usernameLogin);
 }
 
 // stores a users jwt in local storage
 function storeUser(jwt) {
   localStorage.setItem("jwt", jwt);
   getPostsByUser();
+}
+
+//checking signed in
+function checkJwt() {
+  const signedIn = localStorage.getItem("jwt");
+  if (signedIn) {
+    console.log("signed in");
+    renderSignedIn();
+  }
 }
 
 // re-renders main page
@@ -132,15 +148,15 @@ function updateContentPage() {
 
 // changes sign in welcome and adds signed in features
 function renderSignedIn() {
-  document.getElementById("userWelcome").innerHTML = `WELCOME BACK, ${
-    document.getElementById("username").value
-  }!`;
+  document.getElementById(
+    "userWelcome"
+  ).innerHTML = `WELCOME BACK, ${localStorage.getItem("un")}!`;
   document.getElementById(
     "create-post"
   ).innerHTML = `<button onclick="createPostPage()">Create a Post</button>`;
   document.getElementById(
     "signed-in"
-  ).innerHTML = `<div class="logout"><button onclick="logout()">Logout</button></div>`;
+  ).innerHTML = `<a href="/index.html"><div class="logout"><button onclick="logout()">Logout</button></div></a>`;
   document.getElementById(
     "drinkSearch"
   ).innerHTML = `<div class="search-drink-caption"><div>Search for a drink recipe!</div><input type="text" placeholder="Enter a drink name..." id="drink" />
