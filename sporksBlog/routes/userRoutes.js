@@ -1,6 +1,8 @@
 const {
   getAllUsers,
   postUser,
+  editUser,
+  deleteUser,
   authenticateUser,
   getUserById,
 } = require("../controllers/userControllers");
@@ -12,6 +14,8 @@ const userRoutes = (app) => {
   app.get("/user-by-id", getUserById);
   app.post("/authenticate-user", authenticateUser);
   app.post("/user", postUser);
+  app.put("/user", editUser);
+  app.delete("/user", deleteUser);
 };
 
 module.exports = { userRoutes };

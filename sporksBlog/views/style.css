@@ -202,8 +202,7 @@ body {
   align-items: center;
   justify-content: space-evenly;
   border-radius: 10px;
-
-  background-color: rgb(253, 252, 252);
+  background-color: white;
   height: 100%;
   width: 100%;
 }
@@ -227,6 +226,7 @@ body {
   padding: 10px;
   display: flex;
   justify-content: center;
+  text-shadow: 2px 2px white;
 }
 
 .post-box input,
@@ -262,14 +262,13 @@ textarea {
 
 .read {
   width: 100%;
-  height: 100vh;
+  margin-bottom: 50px;
 }
 /* this is formatting the title to middle and page */
 .fullpost {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
 }
 
 .fpTitle {
@@ -303,13 +302,14 @@ textarea {
   justify-content: center;
   height: 100%;
   margin-top: 20px;
+  padding-top: 150px;
+  border-top: 6px solid black;
 }
 
 .fpIngredients-cont {
   overflow: scroll;
-  width: 40%;
-  height: 100%;
-  border-right: 2px solid black;
+  width: 500px;
+  border-right: 3px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -317,23 +317,23 @@ textarea {
 
 .fpInstructions-cont {
   overflow: scroll;
-  width: 40%;
+  width: 500px;
   height: 100%;
-  border-left: 2px solid black;
+  border-left: 3px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .fpInstructions {
-  font-size: 15px;
+  font-size: 20px;
   overflow: scroll;
   padding: 20px;
   height: 100%;
 }
 
 .fpIngredients {
-  font-size: 15px;
+  font-size: 20px;
   overflow: scroll;
   padding: 20px;
   height: 100%;
@@ -354,7 +354,7 @@ textarea {
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
+  position: fixed;
   z-index: 1; /* Sit on top */
   left: 0;
   top: 0;
@@ -367,12 +367,12 @@ textarea {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
+  background-color: black;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-  color: black;
+  width: 50%; /* Could be more or less, depending on screen size */
+  color: white;
 }
 
 /* The Close Button */
@@ -397,7 +397,11 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  border: 1px solid black;
+  background-color: black;
+}
+
+.create-input input {
+  margin-left: 10px;
 }
 
 .create-cont {
@@ -410,6 +414,13 @@ textarea {
 
 .modal-title {
   font-size: 30px;
+  background-color: #8ffc6e;
+  border: 1px solid white;
+  width: 500px;
+  text-align: center;
+  color: black;
+  text-shadow: 2px 2px white;
+  border-radius: 100px;
 }
 
 a {
@@ -491,4 +502,8 @@ a {
   background-size: 200px;
   background-repeat: repeat;
   overflow: scroll;
+}
+
+.search-drink-caption {
+  text-align: center;
 }

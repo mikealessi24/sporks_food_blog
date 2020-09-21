@@ -143,8 +143,8 @@ function renderSignedIn() {
   ).innerHTML = `<div class="logout"><button onclick="logout()">Logout</button></div>`;
   document.getElementById(
     "drinkSearch"
-  ).innerHTML = `<input type="text" placeholder="Enter a drink name..." id="drink" />
-  <button onclick="drinkSearch()">Search</button>`;
+  ).innerHTML = `<div class="search-drink-caption"><div>Search for a drink recipe!</div><input type="text" placeholder="Enter a drink name..." id="drink" />
+  <button onclick="drinkSearch()">Search</button></div>`;
 }
 
 // logout

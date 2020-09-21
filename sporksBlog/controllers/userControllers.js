@@ -83,4 +83,46 @@ const authenticateUser = async (request, response) => {
   }
 };
 
-module.exports = { getAllUsers, postUser, authenticateUser, getUserById };
+const editUser = async (request, response) => {
+  try {
+    console.log("edit a user");
+    const id = request.query.id;
+    const username = request.body.username;
+    const password = request.body.password;
+    const firstname = request.body.firstname;
+    const lastname = request.body.lastname;
+
+    const currentUser = await UserModel.findById(id);
+
+    const updatedUser = await UserModel.findByIdAndUpdate(id, {
+      username: username ? username : currentUser.username,
+      password: password ? password : currentUser.password,
+      firstname: firstname ? firstname : currentUser.firstname,
+      lastname: lastname ? lastname : currentUser.lastname,
+    });
+    response.status(200).send(updatedUser);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+};
+
+const deleteUser = async (request, response) => {
+  try {
+    const id = request.query.id;
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+    response.status(200).send(deletedUser);
+  } catch (error) {
+    response.status(500).send(error);
+    console.log(error);
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  postUser,
+  authenticateUser,
+  deleteUser,
+  getUserById,
+  editUser,
+};
